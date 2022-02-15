@@ -1,0 +1,6 @@
+A rendszer nem tal lja a megadott f jlt.
+elso nev 
+masodik nev 
+harmadik nev 
+negyedik nev 
+otodik nev 

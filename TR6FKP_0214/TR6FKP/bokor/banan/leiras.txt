@@ -1,0 +1,4 @@
+A rendszer nem tal lja a megadott f jlt.
+A barack edes 
+A barack finom 
+A barack eheto 
