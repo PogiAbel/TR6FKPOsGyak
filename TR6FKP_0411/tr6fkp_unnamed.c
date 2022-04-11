@@ -9,7 +9,7 @@ int main(){
     int fd[2];
     pid_t wpid;
     int status = 0;
-    if (_pipe(fd,10,1) == -1) {
+    if (pipe(fd) == -1) {
        fprintf(stderr, "Pipe faild");
     return 1;
     }
