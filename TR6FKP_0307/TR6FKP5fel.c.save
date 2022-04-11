@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+int main(){
+
+    int status = 0;
+    int n1 = fork();
+  
+    int n2 = fork();
+    
+    if (n1 > 0 && n2 > 0)
+    {
+	while (( wait(&status)) > 0);
+        printf("parent\n"
+        printf("%d %d \n", n1, n2);
+        printf(" my id is %d \n", getpid());
+    }
+    else if (n1 == 0 && n2 > 0)
+    {
+        printf("Nulla osztas\n");
+        //printf("%d %d \n", n1, n2/0);
+        printf("my id is %d  \n", getpid());
+    }
+    else if (n1 > 0 && n2 == 0)
+    {
+        printf("Abort\n");
+        printf("%d %d \n", n1, n2);
+        printf("my id is %d  \n", getpid());
+        printf(" my parentid is %d \n", getppid());
+    }
+    else {
+        printf("Exit\n");
+        printf("%d %d \n", n1, n2);
+        printf(" my id is %d \n", getpid());
+        printf(" my parentid is %d \n", getppid());
+	exit();
+    }
+  
+    return 0;
+}
+
