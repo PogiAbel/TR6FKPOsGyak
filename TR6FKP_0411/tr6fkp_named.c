@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -10,7 +11,7 @@ int main(){
     int status = 0;
     char input[30];
     char * myfifo = "/myfifo";
-
+    pid_t wpid;
     pid_t p = fork();
     if (p < 0) {
         fprintf(stderr, "fork Failed");
@@ -18,9 +19,9 @@ int main(){
     } else if (p>0){
         
         mkfifo(myfifo, 0666);
-        wait(&status);
+        wpid = wait(&status);
         fd = open(myfifo, O_RDONLY);
-        read(fd, input, 80);
+        read(fd, input, 30);
         printf("Kapot uzenet:%s",input);
 
 
