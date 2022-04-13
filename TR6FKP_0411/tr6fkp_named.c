@@ -1,40 +1,55 @@
-#include <stdio.h>
-#include <string.h>
-#include <fcntl.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <sys/file.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-int main(){
-    int fd,fd1;
-    int status = 0;
-    char input[30];
-    char * myfifo = "/myfifo";
-    pid_t wpid;
-    pid_t p = fork();
-    if (p < 0) {
-        fprintf(stderr, "fork Failed");
-        return 1;
-    } else if (p>0){
-        
-        mkfifo(myfifo, 0666);
-        wpid = wait(&status);
-        fd = open(myfifo, O_RDONLY);
-        read(fd, input, 30);
-        printf("Kapot uzenet:%s",input);
+int main()
+{
 
+	int fd, ret;
+	char buf[32];
 
-    } else {
-        fd1 = open(myfifo,O_WRONLY);
-        char out_text[] = "Pogonyi TR6FKP\0";
-        write(fd1,out_text,strlen(out_text)+1);
-        close(fd1);
+	buf[0]=0;
+	pid_t cpid;
+	ret=mkfifo("tr6fkp",00666);
+	if (ret == -1) {
+	     perror("mkfifo()");
+	     exit(-1);
+	 }
+	 cpid = fork();
+         if (cpid == -1) {
+	   perror("fork");
+	   exit(-1);
+        } 
+        if(cpid == 0){  /*gyerek processz*/
+          fd=open("tr6fkp",O_RDWR);
+	  if (fd == -1) {
+	      perror("open() hiba!");
+	      exit(-1);
+	  }
 
-    }
-
-
-
-
-    return 0;
+	  strcpy(buf,"Pogonyi Abel Kurt\0");
+	  printf("irok a fifoba: %s:%d\n",buf,strlen(buf));
+	  write(fd,buf,strlen(buf));
+	  close(fd);
+	  sleep(300);
+	  exit(0);
+        }
+        else {		/*szülő processz*/
+	  wait(NULL);
+	  fd=open("tr6fkp",O_RDWR);
+	  if (fd == -1) {
+	      perror("open() hiba!");
+	      exit(-1);
+	  }
+	  ret=read(fd,buf,32); 
+	  printf("read() olvasott %d byteot, ami a kovetkezo: %s\n",ret,buf);
+	  unlink("tr6fkp");
+	  exit(0);
+        }	
 }
